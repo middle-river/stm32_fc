@@ -70,6 +70,8 @@ void sen_process() {
   int16_t data[7];
   read_register(0x3b, (uint8_t *)data, 14);
   for (int i = 0; i < 7; i++) data[i] = bswap_16(data[i]);
+
+  // Convert the values.
   for (int i = 0; i < 3; i++) {
     float acc = data[i] / 2048.0f;	// 2048 LSB/G
     if (IMU_REV[i]) acc = -acc;
@@ -102,14 +104,15 @@ void sen_process() {
   }
 
   // Apply LPF to the raw sensor values after ofsetting the bias.
-  static float lpf_cutoff = -1.0f;
-  static LPF lpf_acc[3], lpf_gyro[3];
-  if (lpf_cutoff != sys.par.filter_sensor) {
-    lpf_cutoff = sys.par.filter_sensor;
-    for (int i = 0; i < 3; i++) {
-      lpf_acc[i].reset(lpf_cutoff, SEN_SAMPFREQ);
-      lpf_gyro[i].reset(lpf_cutoff, SEN_SAMPFREQ);
-    }
+  static float filter_acc = -1.0f, filter_gyro = -1.0f;
+  static LPF_BQ2 lpf_acc[3], lpf_gyro[3];
+  if (filter_acc != sys.par.filter_acc) {
+    filter_acc = sys.par.filter_acc;
+    for (int i = 0; i < 3; i++) lpf_acc[i].reset(filter_acc, SEN_SAMPFREQ);
+  }
+  if (filter_gyro != sys.par.filter_gyro) {
+    filter_gyro = sys.par.filter_gyro;
+    for (int i = 0; i < 3; i++) lpf_gyro[i].reset(filter_gyro, SEN_SAMPFREQ);
   }
   for (int i = 0; i < 3; i++) {
     sen.acc[i] = lpf_acc[i].filter(sen.acc[i] - offset.acc[i]);

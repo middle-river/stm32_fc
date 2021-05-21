@@ -16,6 +16,7 @@ extern Receiver rec;
 
 void rec_init();	// Initialize the receiver.
 void rec_process();	// Process the receiver.
-void rec_rebind();	// Reset binding.
+void rec_rebind();	// Request rebinding.
+void rec_reset();	// Reset binding.
 
 #endif

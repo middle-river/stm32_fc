@@ -26,18 +26,18 @@ constexpr int ROM_REC = 0x0000;		// 32 bytes.
 constexpr int ROM_SEN = ROM_REC + 32;	// 32 bytes.
 constexpr int ROM_PAR = ROM_SEN + 32;	// 96 bytes.
 
-constexpr uint8_t LED_OFFLINE  = 0b10001000;
+constexpr uint8_t LED_OFFLINE  = 0b10100000;
 constexpr uint8_t LED_CALIB    = 0b10101010;
-constexpr uint8_t LED_DISARMED = 0b11110000;
+constexpr uint8_t LED_ACRO     = 0b11001000;
+constexpr uint8_t LED_ANGLE    = 0b11001100;
 constexpr uint8_t LED_NOBAT    = 0b10000000;
 constexpr uint8_t LED_LOWBAT   = 0b11111100;
 constexpr uint8_t LED_ARMED    = 0b11111111;
 
-constexpr bool ESC_CALIBRATE = false;	// Run ESC calibration.
-constexpr int ESC_FREQ = 3922;		// PWM: 490, Oneshot125: 3922, Oneshot42: 11766.
+constexpr int ESC_FREQ = 3922;		// ESC protocol (PWM: 490, Oneshot125: 3922, Oneshot42: 11766).
 
-constexpr int BAT_CELL = 2;					// Number of LiPo cells.
-constexpr float BAT_VREF = 3.3f;				// ADC Vref voltage [V].
+constexpr int BAT_CELL = 1;					// Number of LiPo cells.
+constexpr float BAT_VREF = 2.85f;				// ADC Vref voltage [V].
 constexpr float BAT_SCALE = (39000.0f + 22000.0f) / 22000.0f;	// ADC scale.
 
 constexpr int IMU_MAP[3] = {1, 0, 2};			// IMU orientation mappings.

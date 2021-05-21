@@ -6,7 +6,17 @@
 #include "System.h"
 #include "Utility.h"
 
+void calib() {
+  // Enter the calibration mode if the TX pin (PA9) is low-impedance.
+  pinMode(PA9, INPUT_PULLUP);
+  delay(100);
+  if (digitalRead(PA9) == LOW) sys_calib();
+  pinMode(PA9, INPUT);
+}
+
 void setup() {
+  calib();
+
   com_init();
   ctl_init();
   rec_init();

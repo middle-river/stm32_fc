@@ -137,12 +137,13 @@ static void execute(uint8_t cmd, uint8_t *data) {
         pid[i][1] = (uint8_t)(sys.par.pid[i][1] * 1000.0f);
         pid[i][2] = (uint8_t)(sys.par.pid[i][2] * 10000.0f);
       }
-      pid[5][0] = (uint8_t)(sys.par.rotation_gain * 10.0f);
+      pid[5][0] = (uint8_t)(sys.par.filter_acc * 1.0f);
+      pid[6][0] = (uint8_t)(sys.par.filter_gyro * 1.0f);
+      pid[7][0] = (uint8_t)(sys.par.filter_dterm * 1.0f);
       pid[5][1] = (uint8_t)(sys.par.angle_max * RAD2DEG * 0.1f + 0.5f);
-      pid[5][2] = (uint8_t)(sys.par.filter_sensor * 0.1f);
-      pid[6][0] = (uint8_t)(sys.par.throttle_gain * 10.0f);
       pid[6][1] = (uint8_t)(sys.par.rotation_max * RAD2DEG * 0.1f + 0.5f);
-      pid[6][2] = (uint8_t)(sys.par.filter_dterm * 0.1f);
+      pid[5][2] = (uint8_t)(sys.par.rotation_gain * 10.0f);
+      pid[6][2] = (uint8_t)(sys.par.throttle_gain * 10.0f);
       respond(cmd, (const uint8_t *)*pid, sizeof(pid));
     }
     break;
@@ -201,12 +202,13 @@ static void execute(uint8_t cmd, uint8_t *data) {
         sys.par.pid[i][1] = (float)pid[i][1] / 1000.0f;
         sys.par.pid[i][2] = (float)pid[i][2] / 10000.0f;
       }
-      sys.par.rotation_gain = pid[5][0] * 0.1f;
+      sys.par.filter_acc    = pid[5][0] * 1.0f;
+      sys.par.filter_gyro   = pid[6][0] * 1.0f;
+      sys.par.filter_dterm  = pid[7][0] * 1.0f;
       sys.par.angle_max     = pid[5][1] * DEG2RAD * 10.0f;
-      sys.par.filter_sensor = pid[5][2] * 10.0f;
-      sys.par.throttle_gain = pid[6][0] * 0.1f;
       sys.par.rotation_max  = pid[6][1] * DEG2RAD * 10.0f;
-      sys.par.filter_dterm  = pid[6][2] * 10.0f;
+      sys.par.rotation_gain = pid[5][2] * 0.1f;
+      sys.par.throttle_gain = pid[6][2] * 0.1f;
       respond(cmd, NULL, 0);
     }
     break;
@@ -257,6 +259,7 @@ static void execute(uint8_t cmd, uint8_t *data) {
       debug[0] = (int16_t)(ctl.elapsed_time * 1.0e6f);
       debug[1] = (int16_t)(sen.elapsed_time * 1.0e6f);
       debug[2] = (int16_t)rec.count;
+      debug[3] = (int16_t)0;
       respond(cmd, (const uint8_t *)debug, sizeof(debug));
     }
     break;

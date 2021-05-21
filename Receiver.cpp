@@ -132,7 +132,7 @@ static constexpr int BIND_CHANNEL = 81;
 static constexpr uint8_t BIND_ADDRESS[] = "\x12\x23\x23\x45\x78";
 static constexpr int PACKET_SIZE = 10;
 static constexpr int CHAN_MAP[8] = {0, 1, 3, 2, 5, 6, 4, 7};
-static constexpr bool CHAN_REV[8] = {false, false, true, true, false, false, true, false};
+static constexpr bool CHAN_REV[8] = {false, false, true, true, false, false, false, false};
 static constexpr float ONLINE_TIMEOUT = 1.0;	// No signals for this period means offline [s].
 static constexpr float HOP_PERIOD = 0.0095f;    // Maximum frequency hopping period [s].
 
@@ -186,8 +186,7 @@ void rec_process() {
 
   if (rebind) {
     rebind = false;
-    bind_info.channels[0] = 0xff;
-    EEPROM.put(ROM_REC, bind_info);
+    rec_reset();
     state = 0;
   }
 
@@ -250,10 +249,10 @@ void rec_process() {
     for (int8_t i = 0; i < 8; i++) {
       uint16_t val = (((high & 0x0003) << 8) | buf[i]);
       high >>= 2;
-      if (i == 6 && val >= 3) val = 850;
-      val = constrain(val, 150, 850);
+      if (i == 6 && val >= 3) val = 1000;
+      val = constrain(val, 0, 1000);
       if (CHAN_REV[i]) val = 1000 - val;
-      rec.value[CHAN_MAP[i]] = (val - 150) / 700.0f;
+      rec.value[CHAN_MAP[i]] = val / 1000.0f;
     }
     rec.online = true;
     onl_timer = now + (uint32_t)(ONLINE_TIMEOUT * 1.0e6f);
@@ -262,4 +261,9 @@ void rec_process() {
 
 void rec_rebind() {
   rebind = true;
+}
+
+void rec_reset() {
+  bind_info.channels[0] = 0xff;
+  EEPROM.put(ROM_REC, bind_info);
 }

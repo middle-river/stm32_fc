@@ -16,7 +16,8 @@ struct Parameter {
   float vbat_scale;	// Scaling factor of the battery voltage.
   float vbat_warn;	// Battery voltage for the warning level [V].
   float vbat_crit;	// Battery voltage for the critical level [V].
-  float filter_sensor;	// Filter cutoff frequency for the sensor [Hz].
+  float filter_acc;	// Filter cutoff frequency for the accelerometer [Hz].
+  float filter_gyro;	// Filter cutoff frequency for the gyro [Hz].
   float filter_dterm;	// Filter cutoff frequency for the PID controller D term.
 };
 
@@ -34,5 +35,6 @@ void sys_motor(const float *motor);	// Set the motor speed.
 void sys_load();			// Load the parameters.
 void sys_save();			// Save the parameters.
 void sys_reset();			// Reset the parameters.
+void sys_calib();			// Calibrate the system.
 
 #endif

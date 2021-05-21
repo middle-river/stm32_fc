@@ -70,7 +70,7 @@ void ctl_process() {
   float output[3];
   const float integ_limit = sys.par.rotation_max * CTL_LOOPFREQ;
   static float lpf_cutoff = -1.0f;
-  static LPF lpf_d[3];
+  static LPF_EMA lpf_d[3];
   if (lpf_cutoff != sys.par.filter_dterm) {
     lpf_cutoff = sys.par.filter_dterm;
     for (int i = 0; i < 3; i++) {
@@ -84,7 +84,7 @@ void ctl_process() {
     } else {			// ACRO mode.
       setpoint = (rec.value[i] - 0.5f) / 0.5f * sys.par.rotation_max;
     }
-    const float error = (setpoint - sen.gyro[i]);
+    const float error = setpoint - sen.gyro[i];
     integ[i] = constrain(integ[i] + error, -integ_limit, integ_limit);
     deriv[i] = lpf_d[i].filter(error - deriv[i]);
     const float p_term = sys.par.pid[i][0] * error;
