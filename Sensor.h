@@ -19,5 +19,6 @@ extern Sensor sen;
 void sen_init();			// Initialize the sensor.
 void sen_process();			// Process the sensor.
 void sen_calibrate(bool enable);	// Enable or disable sensor calibration.
+void sen_reset();			// Reset the sensor.
 
 #endif

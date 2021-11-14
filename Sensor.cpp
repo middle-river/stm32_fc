@@ -80,6 +80,14 @@ void sen_process() {
     if (IMU_REV[i]) gyro = -gyro;
     sen.gyro[IMU_MAP[i]] = gyro;
   }
+  const float org_acc[2] = {sen.acc[0], sen.acc[1]};
+  const float org_gyro[2] = {sen.gyro[0], sen.gyro[1]};
+  sen.acc[0] = cosf(IMU_ROT) * org_acc[0] - sinf(IMU_ROT) * org_acc[1];
+  sen.acc[1] = sinf(IMU_ROT) * org_acc[0] + cosf(IMU_ROT) * org_acc[1];
+  sen.gyro[0] = cosf(IMU_ROT) * org_gyro[0] - sinf(IMU_ROT) * org_gyro[1];
+  sen.gyro[1] = sinf(IMU_ROT) * org_gyro[0] + cosf(IMU_ROT) * org_gyro[1];
+
+  // Offset adjustment.
   if (calib_enable) {
     if (calib_num == 0) {
       for (int i = 0; i < 3; i++) {
@@ -97,7 +105,7 @@ void sen_process() {
       offset.acc[i] = calib.acc[i] / calib_num;
       offset.gyro[i] = calib.gyro[i] / calib_num;
     }
-    offset.acc[2] += 1.0;	// Gravity.
+    offset.acc[2] += 1.0f;	// Gravity.
     EEPROM.put(ROM_SEN, offset);
     rot[0] = 1.0f; rot[1] = rot[2] = rot[3] = 0.0f;
     calib_num = 0;
@@ -161,4 +169,12 @@ void sen_process() {
 
 void sen_calibrate(bool enable) {
   calib_enable = enable;
+}
+
+void sen_reset() {
+  for (int i = 0; i < 3; i++) {
+    offset.acc[i] = 0.0f;
+    offset.gyro[i] = 0.0f;
+  }
+  EEPROM.put(ROM_SEN, offset);
 }

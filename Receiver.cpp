@@ -131,9 +131,9 @@ struct BindInfo {
 static constexpr int BIND_CHANNEL = 81;
 static constexpr uint8_t BIND_ADDRESS[] = "\x12\x23\x23\x45\x78";
 static constexpr int PACKET_SIZE = 10;
-static constexpr int CHAN_MAP[8] = {0, 1, 3, 2, 5, 6, 4, 7};
-static constexpr bool CHAN_REV[8] = {false, false, true, true, false, false, false, false};
-static constexpr float ONLINE_TIMEOUT = 1.0;	// No signals for this period means offline [s].
+static constexpr bool CHAN_REV[8] = {false, true, true, false, false, false, false, false};
+static constexpr int CHAN_MAP[8] = {0, 1, 3, 2, 4, 5, 6, 7};
+static constexpr float ONLINE_TIMEOUT = 1.0f;	// No signals for this period means offline [s].
 static constexpr float HOP_PERIOD = 0.0095f;    // Maximum frequency hopping period [s].
 
 static SPIClass spi(PIN_TRX_MOSI, PIN_TRX_MISO, PIN_TRX_SCK);
@@ -249,7 +249,6 @@ void rec_process() {
     for (int8_t i = 0; i < 8; i++) {
       uint16_t val = (((high & 0x0003) << 8) | buf[i]);
       high >>= 2;
-      if (i == 6 && val >= 3) val = 1000;
       val = constrain(val, 0, 1000);
       if (CHAN_REV[i]) val = 1000 - val;
       rec.value[CHAN_MAP[i]] = val / 1000.0f;

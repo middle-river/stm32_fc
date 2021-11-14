@@ -26,7 +26,7 @@ void ctl_process() {
   static uint32_t calib_timer = 0;
   const int stk_v = (rec.value[3] <= sys.par.stk_thres) ? -1 : (rec.value[3] >= 1.0f - sys.par.stk_thres) ? +1 : 0;
   const int stk_h = (rec.value[2] <= sys.par.stk_thres) ? -1 : (rec.value[2] >= 1.0f - sys.par.stk_thres) ? +1 : 0;
-  ctl.selflv = (rec.value[4] > 0.5f);
+  ctl.selflv = (rec.value[4] < 0.25f);
   if (!ctl.nobat && sys.vbat <= sys.par.vbat_crit * BAT_CELL) {
     ctl.nobat = true;
   }

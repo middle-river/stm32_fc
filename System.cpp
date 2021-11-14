@@ -9,6 +9,7 @@
 #include "Config.h"
 #include "Controller.h"
 #include "Receiver.h"
+#include "Sensor.h"
 #include "System.h"
 #include "Utility.h"
 
@@ -120,6 +121,7 @@ void sys_calib() {
   // Parameter reset.
   sys_reset();
   sys_save();
+  sen_reset();
 
   for (int i = 0; i < 5 * 1; i++) {
     digitalWrite(PIN_LED_FR, 1 - i % 2);

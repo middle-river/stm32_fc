@@ -46,9 +46,9 @@ public:
   void reset(float cutoff_freq, float sampling_freq) {
     const float q = 1.0f / sqrtf(2.0f);
     const float omega = 2.0f * (float)M_PI * cutoff_freq / sampling_freq;
-    const float alpha = sin(omega) / (2.0f * q);
+    const float alpha = sinf(omega) / (2.0f * q);
     a_[0] = 1.0f + alpha;
-    a_[1] = -2.0f * cos(omega);
+    a_[1] = -2.0f * cosf(omega);
     a_[2] = 1.0f - alpha;
     b_[0] = (1.0f - cosf(omega)) / 2.0f;
     b_[1] = 1.0f - cosf(omega);
